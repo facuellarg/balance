@@ -42,7 +42,8 @@ var (
 
 func main() {
 
-	auth := smtp.PlainAuth("", email, email, "smtp.gmail.com")
+	fmt.Println("email", email)
+	auth := smtp.PlainAuth("", email, pass, "smtp.gmail.com")
 
 	loader := CSVLoaderTransformer{FileName: "data.csv"}
 	transactions := loader.Load()
@@ -123,8 +124,6 @@ func main() {
 	if err := smtp.SendMail("smtp.gmail.com:587", auth, email, []string{to}, message); err != nil {
 		log.Fatal(err)
 	}
-	// Print the executed template
-	fmt.Println(tpl.String())
 
 }
 
