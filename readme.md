@@ -60,3 +60,11 @@ This end point receive a `POST` request with this body
 ```
 
 This will execute the program and send an email with the balance information to the user set in the body. The balance will be make using the file specified.
+
+## Missing
+
+### testing
+
+### mailer
+
+The sender email was tested just with gmail.
