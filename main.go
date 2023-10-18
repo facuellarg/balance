@@ -7,6 +7,11 @@ import (
 	"net/smtp"
 	"os"
 	"text/template"
+
+	"github.com/facuellarg/stori/aws"
+	"github.com/facuellarg/stori/domain/entities"
+	"github.com/facuellarg/stori/interface/repository"
+	"github.com/facuellarg/stori/use-case/service"
 )
 
 type Transaction struct {
@@ -37,13 +42,22 @@ var (
 
 func main() {
 
-	auth := smtp.PlainAuth("", email, email, "smtp.gmail.com")
+	fmt.Println("email", email)
+	auth := smtp.PlainAuth("", email, pass, "smtp.gmail.com")
 
 	loader := CSVLoaderTransformer{FileName: "data.csv"}
 	transactions := loader.Load()
-	fmt.Printf("transactions: %+v\n", transactions)
+
+	dynamoRepository := repository.NewTransactionDynamoRepository(aws.Dynamodb())
+	transactionService := service.NewTransactionService(&dynamoRepository)
+
+	for _, transaction := range transactions {
+		if err := transactionService.Store(transaction); err != nil {
+			log.Fatalf("Error storing transaction: %s", err)
+		}
+	}
+
 	balance := CreateBalance(transactions)
-	fmt.Printf("balance: %+v\n", balance)
 	const emailTemplate = `
 	<html>
 	<head>
@@ -110,12 +124,10 @@ func main() {
 	if err := smtp.SendMail("smtp.gmail.com:587", auth, email, []string{to}, message); err != nil {
 		log.Fatal(err)
 	}
-	// Print the executed template
-	fmt.Println(tpl.String())
 
 }
 
-func CreateBalance(transactions []Transaction) Balance {
+func CreateBalance(transactions []entities.Transaction) Balance {
 
 	balance := Balance{
 		TotalBalance:         0,
@@ -126,7 +138,7 @@ func CreateBalance(transactions []Transaction) Balance {
 
 	balanceTotalDebit := 0
 	balanceTotalCredit := 0
-	transactionsPerMonth := make([][]Transaction, 12)
+	transactionsPerMonth := make([][]entities.Transaction, 12)
 	for _, transaction := range transactions {
 		transactionsPerMonth[transaction.Month] = append(transactionsPerMonth[transaction.Month], transaction)
 	}

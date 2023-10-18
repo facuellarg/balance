@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/facuellarg/stori/domain/entities"
 )
 
 type DataLoader interface {
@@ -20,7 +22,7 @@ type CSVLoaderTransformer struct {
 	FileName string
 }
 
-func (c CSVLoaderTransformer) Load() []Transaction {
+func (c CSVLoaderTransformer) Load() []entities.Transaction {
 
 	//Read csv file with headers
 	file, err := os.OpenFile(c.FileName, os.O_RDONLY, 0)
@@ -38,7 +40,7 @@ func (c CSVLoaderTransformer) Load() []Transaction {
 		panic(err)
 	}
 
-	response := []Transaction{}
+	response := []entities.Transaction{}
 
 	for {
 		record, err := reader.Read()
@@ -58,30 +60,30 @@ func (c CSVLoaderTransformer) Load() []Transaction {
 
 }
 
-func (c CSVLoaderTransformer) Transform(record []string) (Transaction, error) {
+func (c CSVLoaderTransformer) Transform(record []string) (entities.Transaction, error) {
 
 	id, err := strconv.Atoi(record[0])
 	if err != nil {
-		return Transaction{}, fmt.Errorf("invalid id %w", err)
+		return entities.Transaction{}, fmt.Errorf("invalid id %w", err)
 	}
 
 	dateSplited := strings.Split(record[1], "/")
 	month, err := strconv.Atoi(dateSplited[0])
 	if err != nil {
-		return Transaction{}, fmt.Errorf("invalid month %w", err)
+		return entities.Transaction{}, fmt.Errorf("invalid month %w", err)
 	}
 
 	day, err := strconv.Atoi(dateSplited[1])
 	if err != nil {
-		return Transaction{}, fmt.Errorf("invalid day %w", err)
+		return entities.Transaction{}, fmt.Errorf("invalid day %w", err)
 	}
 
 	amount, err := strconv.ParseFloat(record[2], 32)
 	if err != nil {
-		return Transaction{}, fmt.Errorf("invalid amount %w", err)
+		return entities.Transaction{}, fmt.Errorf("invalid amount %w", err)
 	}
 
-	return Transaction{
+	return entities.Transaction{
 		ID:     id,
 		Amount: float32(amount),
 		Month:  month,
