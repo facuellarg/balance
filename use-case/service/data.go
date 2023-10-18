@@ -1,43 +1,48 @@
-package main
+package service
 
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3iface"
 	"github.com/facuellarg/stori/domain/entities"
 )
 
-type DataLoader interface {
-	Load() []Transaction
-}
-
-type Transformer interface {
-	Transform([]string) (Transaction, error)
-}
-
 type CSVLoaderTransformer struct {
-	FileName string
+	s3     s3iface.S3API
+	bucket string
 }
 
-func (c CSVLoaderTransformer) Load() []entities.Transaction {
+func NewCSVLoaderTransformer(s3 s3iface.S3API, bucket string) CSVLoaderTransformer {
+	return CSVLoaderTransformer{s3, bucket}
+}
 
-	//Read csv file with headers
-	file, err := os.OpenFile(c.FileName, os.O_RDONLY, 0)
-	if err != nil {
-		panic(err)
+func (c CSVLoaderTransformer) Load(fileName string) (entities.Transactions, error) {
+
+	input := &s3.GetObjectInput{
+		Bucket: aws.String(c.bucket),
+		Key:    aws.String(fileName),
 	}
-	defer file.Close()
 
-	reader := csv.NewReader(file)
+	result, err := c.s3.GetObject(input)
+	if err != nil {
+		err = fmt.Errorf("error getting object %s from bucket %s: %w", fileName, c.bucket, err)
+		return nil, err
+	}
+
+	defer result.Body.Close()
+
+	reader := csv.NewReader(result.Body)
 	reader.FieldsPerRecord = 3
 	reader.TrimLeadingSpace = true
 
 	//discard headers
 	if _, err := reader.Read(); err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	response := []entities.Transaction{}
@@ -50,13 +55,13 @@ func (c CSVLoaderTransformer) Load() []entities.Transaction {
 
 		transaction, err := c.Transform(record)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		response = append(response, transaction)
 
 	}
-	return response
+	return response, nil
 
 }
 
