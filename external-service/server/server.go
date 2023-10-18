@@ -15,7 +15,6 @@ import (
 type (
 	TransactionRequest struct {
 		FileName string `json:"fileName"`
-		Bucket   string `json:"bucket"`
 		To       string `json:"to"`
 	}
 
@@ -40,7 +39,6 @@ func (ts *TransactionServer) processTransaction(ctx context.Context, event *even
 	}
 	if err := ts.transactionController.ProcessTransaction(
 		transactionRequest.FileName,
-		transactionRequest.Bucket,
 		transactionRequest.To,
 	); err != nil {
 		fmt.Println(err)

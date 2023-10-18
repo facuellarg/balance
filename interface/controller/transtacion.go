@@ -24,7 +24,6 @@ func NewTransactionLambdaController(
 
 func (t *TransactionLambdaController) ProcessTransaction(
 	fileName string,
-	bucket string,
 	to string,
 ) error {
 	transactions, err := t.loader.Load(fileName)
