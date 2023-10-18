@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 func GetRegion() string {
@@ -27,6 +28,10 @@ func mySession() *session.Session {
 
 func Dynamodb() *dynamodb.DynamoDB {
 	return dynamodb.New(mySession())
+}
+
+func S3() *s3.S3 {
+	return s3.New(mySession())
 }
 
 type DynamoDBI interface {
