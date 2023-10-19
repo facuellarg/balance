@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      filter: drop-shadow(5px 5px 10px #000000);
+
+    }
+
+    .container {
+      width: 80%;
+      margin: auto 0px;
+      -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+      -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+      box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Stori_logo_vertical.png" alt="Local Image"
+      style="width:100px;height:200px;">
+    <div>
+      <h1>Balance Information:</h1>
+      <p>Total Balance: ${{.TotalBalance}}</p>
+      <p>Average Debit Amount: ${{.AverageDebitAmount | printf "%.2f"}}</p>
+      <p>Average Credit Amount: ${{.AverageCreditAmount | printf "%.2f"}}</p>
+    </div>
+
+    <h2>Transactions Per Month:</h2>
+    <table>
+      <tr>
+        <th>Month</th>
+        <th>Total</th>
+        <th>Credit Average</th>
+        <th>Debit Average</th>
+      </tr>
+      {{range $key, $value := .TransactionsPerMonth}}
+      <tr>
+        <td>{{$key}}</td>
+        <td>{{$value.Total}}</td>
+        <td>{{$value.CreditAverage}}</td>
+        <td>{{$value.DebitAverage}}</td>
+      </tr>
+      {{end}}
+    </table>
+  </div>
+
+</body>
+
+</html>
