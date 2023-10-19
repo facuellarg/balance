@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
 	"log"
 	"net/smtp"
@@ -18,49 +19,8 @@ type (
 	}
 )
 
-const emailTemplate = `
-	<html>
-	<head>
-	<style>
-		table {
-			font-family: arial, sans-serif;
-			border-collapse: collapse;
-			width: 100%;
-		}
-		td, th {
-			border: 1px solid #dddddd;
-			text-align: left;
-			padding: 8px;
-		}
-	</style>
-	</head>
-	<body>
-	<img src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Stori_logo_vertical.png" alt="Local Image" style="width:200px;height:300px;">
-	<h1>Balance Information:</h1>
-	<p>Total Balance: ${{.TotalBalance}}</p>
-	<p>Average Debit Amount: ${{.AverageDebitAmount | printf "%.2f"}}</p>
-	<p>Average Credit Amount: ${{.AverageCreditAmount | printf "%.2f"}}</p>
-	
-	<h2>Transactions Per Month:</h2>
-	<table>
-	  <tr>
-		<th>Month</th>
-		<th>Total</th>
-		<th>Credit Average</th>
-		<th>Debit Average</th>
-	  </tr>
-	  {{range $key, $value := .TransactionsPerMonth}}
-	  <tr> 
-		<td>{{$key}}</td>
-		<td>{{$value.Total}}</td>
-		<td>{{$value.CreditAverage}}</td>
-		<td>{{$value.DebitAverage}}</td>
-	  </tr>
-	  {{end}}
-	</table>
-	</body>
-	</html>
-	`
+//go:embed layout.html
+var emailTemplate string
 
 func NewEmailService(email string, password string) EmailService {
 

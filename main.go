@@ -47,7 +47,7 @@ func main() {
 
 	emailService := service.NewEmailService(email, pass)
 	transactionController := controller.NewTransactionLambdaController(emailService, transactionService, loader)
-	// if err := transactionController.ProcessTransaction("transactions.csv", bucket, to); err != nil {
+	// if err := transactionController.ProcessTransaction("transactions.csv", "facuellarg@unal.edu.co"); err != nil {
 	// 	panic(err)
 	// }
 	transactionServer := server.NewTransactionServer(transactionController)
