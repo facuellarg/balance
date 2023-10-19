@@ -35,7 +35,7 @@ Additionally you should have installed [Terraform](https://developer.hashicorp.c
 aws configure
 ```
 
-When you have installed Terraform move to the root of this project  and run the followings commands
+When you have installed Terraform move you to the root of the project and run the following commands
 
 ``` sh
 terraform init
@@ -48,19 +48,19 @@ Then type `yes` to apply the configuration and when it finished it will print th
 
 ### Architecture
 
-To this project clean architecture was used aiming to keep easy make changes to it.
+For this project clean architecture was used aiming to keep easy make changes to it.
 
 ### Pattern design
 
-For this project was used the pattern design `Dependency Injection` in order to make easy maintain the application and develop  tests.
+For this project was used the pattern design `Dependency Injection`.
 
 ### Terraform
 
-Terraform was used in this project to create the cloud architecture and deploy id easily with a single command.
+Terraform was used in this project to create the cloud architecture and deploy it easily with a single command.
 
 ### Endpoints
 
-There are two endpoints, one to create and order and other to make a payment and complete the order.
+There are an end point that create the transactions in Dynamo and send the email. The URL will be display after you run the Terraform command.
 
 #### /transactions
 
@@ -73,7 +73,7 @@ This end point receive a `POST` request with this body
 }
 ```
 
-This will execute the program and send an email with the balance information to the user set in the body. The balance will be make using the file specified.
+This will execute the program and send an email with the balance information to the user set in the body. The balance will be build it using the file specified.
 
 ## Missing
 
