@@ -65,7 +65,7 @@ resource "aws_apigatewayv2_integration" "lambda" {
 // specify route that will be used to invoke lambda function
 resource "aws_apigatewayv2_route" "transaction-lambda" {
   api_id    = aws_apigatewayv2_api.api_gw.id
-  route_key = "POST /transaction"
+  route_key = "POST /transactions"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 

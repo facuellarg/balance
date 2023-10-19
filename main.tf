@@ -33,5 +33,5 @@ provider "aws" {
 }
 
 output "api_url" {
-  value = module.transactions.api_url
+  value = "${module.transactions.api_url}/transactions"
 }
